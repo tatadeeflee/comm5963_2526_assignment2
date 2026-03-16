@@ -2,7 +2,7 @@ import torch
 
 from static import FEATURES, TARGET, TARGET_CLASS_DICT
 from utils import load_tensors
-
+from sklearn import model_selection
 
 def run_prediction(_model, x_tensor):
     # Given a model and input, predict the corresponding output
@@ -21,17 +21,20 @@ def train_model(x_tensor, y_tensor) -> torch.nn.Sequential:
     torch.manual_seed(5963)
     # TODO: Configure your model structure
     model = torch.nn.Sequential(
-        torch.nn.Linear(len(FEATURES), 1),
-        torch.nn.Linear(1, len(TARGET_CLASS_DICT))  # len(TARGET_CLASS_DICT) is 3 (Setosa, Versicolor, Verginica)
+        torch.nn.Linear(len(FEATURES), 11),
+        torch.nn.ReLU(),
+        torch.nn.Linear(11, 8),
+        torch.nn.ReLU(),
+        torch.nn.Linear(8, len(TARGET_CLASS_DICT))# len(TARGET_CLASS_DICT) is 3 (Setosa, Versicolor, Verginica)
     )
     # Cross Entropy Loss is used for classification
     loss_function = torch.nn.CrossEntropyLoss()
 
     # TODO: Configure your hyper-parameters
-    num_epochs = 10
-    learning_rate = 0.8
+    num_epochs = 200
+    learning_rate = 0.01
     # TODO: Configurable: optimizer
-    optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
+    optimizer = torch.optim.RMSprop(model.parameters(), lr=learning_rate)
 
     # Start training (do not change this unless you know what you are doing)
     for epoch in range(num_epochs):
